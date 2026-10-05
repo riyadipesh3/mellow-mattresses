@@ -1,0 +1,362 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/quicksand';
+@import '@fontsource-variable/nunito-sans';
+@import '@fontsource/dm-mono';
+
+@source "./**/*.{tsx,ts}";
+
+/* Material: Soft UI. The calmer cousin of clay. Clay is chunky and saturated;
+   Soft UI is airy and low-energy. Delete any of the five blocks marked [SOFT]
+   below and the page visibly stops being Soft UI:
+     1. [SOFT-1] the 28px global radius clamp. Soft UI has no square corners
+        anywhere, including images and form controls.
+     2. [SOFT-2] .soft, the raised surface. Two very wide, very low opacity
+        diffused shadows tinted to the mist blue background hue, plus a 1px
+        inset white top highlight. No border anywhere: edges must never be
+        drawn, only suggested by light. Opacity tops out around 0.3 and the
+        blur runs to 56px, so the depth is barely there.
+     3. [SOFT-3] .soft-sunk, the inset well. Same hue, one step darker, lit
+        from the same top-left source, so it reads as pressed into the field.
+     4. [SOFT-4] the body field wash. Soft UI needs a surface for the shadows
+        to fall on, so the field carries two very faint wide radial tints.
+     5. [SOFT-5] .btn. Zero border, hover changes shadow spread rather than
+        colour, and :active presses the surface down into a well.
+   Contrast: the surfaces are soft, the type is not. Body ink sits at 6.2:1 or
+   better on every surface it lands on.
+
+   Shape rule: ONE radius, 28px, locked site-wide via [SOFT-1]. Images, cards,
+   inputs and buttons all take it. The only permitted exception is a true cap
+   (radius equal to half the box height) and it is used for exactly two things:
+   the firmness gauge track and the round chip inside a select. No pills. */
+@theme {
+  --color-field: #e7edf2;
+  --color-lift: #f2f6f9;
+  --color-veil: #f8fbfd;
+  --color-well: #dbe4eb;
+  --color-ink: #2f3945;
+  --color-quiet: #4f5d69;
+  --color-tide: #35636f;
+  --color-tide-deep: #2a525c;
+
+  --font-display: 'Quicksand Variable', system-ui, sans-serif;
+  --font-sans: 'Nunito Sans Variable', system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, 'SF Mono', monospace;
+
+  --radius-soft: 28px;
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+@layer base {
+  /* [SOFT-1] Every box on the page is round. Soft UI has no hard edges.
+     The form-control line is not redundant: Tailwind's preflight zeroes the
+     radius on button, input, select and textarea, and a 0,0,1 element selector
+     outranks the universal selector above, so Soft UI would otherwise square off
+     every field. */
+  *,
+  *::before,
+  *::after {
+    border-radius: var(--radius-soft);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    border-radius: var(--radius-soft);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-field);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* [SOFT-4] The field the soft surfaces sit on. Two enormous, barely tinted
+     washes so the diffused shadows have a temperature to land on. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(58% 44% at 8% 4%, #f4f8fb 0%, transparent 62%),
+      radial-gradient(52% 46% at 94% 14%, #dde8ee 0%, transparent 64%),
+      radial-gradient(64% 52% at 72% 96%, #e2ecf1 0%, transparent 66%);
+  }
+
+  ::selection {
+    background-color: var(--color-tide);
+    color: var(--color-veil);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-tide);
+    outline-offset: 4px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.03;
+    text-wrap: balance;
+  }
+
+  p {
+    max-width: 65ch;
+    line-height: 1.68;
+  }
+}
+
+@layer components {
+  .shell {
+    max-width: 1400px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .shell {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* [SOFT-2] The raised surface. Two wide diffused shadows, one light from
+     above, one broad and barely darker than the field. Low opacity, huge
+     blur, no border: the edge is suggested, never drawn. */
+  .soft {
+    position: relative;
+    background-color: var(--color-lift);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.85),
+      0 26px 56px -30px rgb(70 104 124 / 0.32),
+      0 6px 16px -10px rgb(70 104 124 / 0.2);
+  }
+
+  /* The highest surface: form panels and the one quiet hero card. */
+  .soft-high {
+    background-color: var(--color-veil);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.95),
+      0 34px 68px -34px rgb(70 104 124 / 0.34),
+      0 8px 20px -12px rgb(70 104 124 / 0.2);
+  }
+
+  /* [SOFT-3] The inset well. Pressed into the field, same top-left light. */
+  .soft-sunk {
+    background-color: var(--color-well);
+    box-shadow:
+      inset 0 2px 5px -2px rgb(84 116 134 / 0.22),
+      inset 0 -2px 4px -2px rgb(255 255 255 / 0.7);
+  }
+
+  /* Soft UI is depthless, so nothing here gets a hairline rule either. */
+  .soft-divide {
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      rgb(53 99 111 / 0) 0%,
+      rgb(53 99 111 / 0.16) 22%,
+      rgb(53 99 111 / 0.16) 78%,
+      rgb(53 99 111 / 0) 100%
+    );
+  }
+
+  .micro {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.2;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-quiet);
+  }
+
+  /* [SOFT-5] Buttons. No border, no colour shift on hover, just the shadow
+     opening out. Pressed state sinks the surface into a well. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+    padding: 0.85rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition:
+      transform 420ms cubic-bezier(0.32, 0.72, 0, 1),
+      box-shadow 420ms cubic-bezier(0.32, 0.72, 0, 1),
+      background-color 420ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .btn:active {
+    transform: translateY(2px);
+    box-shadow:
+      inset 0 2px 6px -1px rgb(84 116 134 / 0.26),
+      inset 0 -1px 3px -1px rgb(255 255 255 / 0.6);
+  }
+
+  .btn-primary {
+    background-color: var(--color-tide);
+    color: var(--color-veil);
+    box-shadow:
+      0 14px 30px -18px rgb(53 99 111 / 0.72),
+      0 3px 8px -5px rgb(53 99 111 / 0.4);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-tide-deep);
+    box-shadow:
+      0 20px 40px -20px rgb(53 99 111 / 0.6),
+      0 4px 10px -6px rgb(53 99 111 / 0.34);
+  }
+
+  /* The secondary button is a sunken well, not an outlined box. */
+  .btn-quiet {
+    background-color: var(--color-well);
+    color: var(--color-ink);
+    box-shadow:
+      inset 0 2px 5px -2px rgb(84 116 134 / 0.2),
+      inset 0 -2px 4px -2px rgb(255 255 255 / 0.75);
+  }
+
+  .btn-quiet:hover {
+    background-color: #d4dfe7;
+  }
+
+  /* Icon medallion nested inside a button. A true cap, one of the two
+     permitted exceptions to the 28px rule. */
+  .btn-icon {
+    display: grid;
+    place-items: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 999px;
+    background-color: rgb(255 255 255 / 0.22);
+    transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .btn-quiet .btn-icon {
+    background-color: rgb(255 255 255 / 0.66);
+  }
+
+  .btn:hover .btn-icon {
+    transform: translate(2px, -1px);
+  }
+
+  /* Firmness gauge. A soft track with one soft fill, no dots. */
+  .gauge {
+    height: 8px;
+    border-radius: 999px;
+    background-color: var(--color-well);
+    box-shadow: inset 0 1px 3px -1px rgb(84 116 134 / 0.26);
+  }
+
+  .gauge-fill {
+    height: 100%;
+    border-radius: 999px;
+    background-color: var(--color-tide);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .link-underline {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    text-decoration-color: rgb(79 93 105 / 0.34);
+    transition: text-decoration-color 320ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .link-underline:hover {
+    text-decoration-color: var(--color-tide);
+  }
+
+  /* Form control. Sits in a soft well, focus opens the shadow rather than
+     drawing a hard ring inside it. */
+  .field {
+    width: 100%;
+    padding: 0.85rem 1.05rem;
+    color: var(--color-ink);
+    background-color: var(--color-well);
+    box-shadow:
+      inset 0 2px 5px -2px rgb(84 116 134 / 0.2),
+      inset 0 -2px 4px -2px rgb(255 255 255 / 0.72);
+    font-size: 0.9375rem;
+    font-family: var(--font-sans);
+    transition:
+      box-shadow 320ms cubic-bezier(0.32, 0.72, 0, 1),
+      background-color 320ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .field::placeholder {
+    color: #7c8995;
+  }
+
+  .field:focus {
+    outline: none;
+    background-color: #e3ebf0;
+    box-shadow:
+      inset 0 2px 5px -2px rgb(84 116 134 / 0.18),
+      inset 0 -2px 4px -2px rgb(255 255 255 / 0.8),
+      0 0 0 3px rgb(53 99 111 / 0.22);
+  }
+
+  /* The one select on the page, drawn with a CSS chevron so no hard native
+     edge shows through the 28px clamp. */
+  .field-select {
+    appearance: none;
+    padding-right: 2.75rem;
+  }
+
+  .chevron {
+    position: absolute;
+    right: 1.15rem;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    border-right: 1.5px solid var(--color-quiet);
+    border-bottom: 1.5px solid var(--color-quiet);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
